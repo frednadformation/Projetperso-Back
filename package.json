@@ -1,0 +1,22 @@
+{
+  "name": "projetperso-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frednadformation/Projetperso-Back.git"
+  },
+  "author": "Fred",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frednadformation/Projetperso-Back/issues"
+  },
+  "homepage": "https://github.com/frednadformation/Projetperso-Back#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
