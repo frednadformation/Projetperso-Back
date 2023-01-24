@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const bcrypt = require('brypt');
+const bcrypt = require('bcrypt');
 
 const cors = require('cors');
 app.use(cors());
@@ -31,7 +31,7 @@ app.post('/api/signup', function (req, res) {
     const Data = new User({
         username : req.body.username,
         email : req.body.email,
-        password : bcrypt.hash(req.body.password, 10),
+        password : bcrypt.hashSync(req.body.password, 10),
         age: req.body.age,
         tel: req.body.tel,
         admin: false
