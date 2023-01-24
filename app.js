@@ -9,6 +9,11 @@ const cors = require('cors');
 app.use(cors());
 require('dotenv').config();
 
+const {createToken, validateToken} = require('./JWT');
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 var dbUrl = process.env.DATABASE_URL
 console.log(dbUrl);
 
@@ -38,22 +43,32 @@ app.post('/api/signup', function (req, res) {
     })
     Data.save().then(()=>{
         console.log("User saved"),
-        res.redirect("/")
+        res.redirect("http://localhost:3000/login")
     })
     .catch(err => console.log(err))
 });
 
 app.post('/api/login', function(req, res) {
+    console.log(req.body);
     User.findOne({
         username: req.body.username
     }).then(user => {
+        
         if (!user){
             res.status(404).send("Username invalid !")
         }
+        const accessToken = createToken(user);
+        res.cookie("access-token", accessToken,{
+            maxAge: 60 * 60 * 24 * 30 * 1000,
+            httpOnly: true, 
+        })
+        
         if(!bcrypt.compareSync(req.body.password, user.password)){
             res.status(404).send("Password invalid !")
         }
-        res.json("LOGGED IN")
+
+        // res.json("LOGGED IN")
+        res.redirect("http://localhost:3000/")
     })
     .catch(err => {
         console.log(err)
