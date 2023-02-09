@@ -7,7 +7,7 @@ const voitureSchema = mongoose.Schema({
     immatriculation : {type : "String"},
     description : {type : "String"},
     mise_en_service : {type:"Date"},
-    img: {type: "String"}
+    img : {type:"Array"}
 });
 
 module.exports = mongoose.model('Voiture', voitureSchema);

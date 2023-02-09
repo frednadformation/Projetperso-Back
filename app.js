@@ -95,6 +95,41 @@ app.get('/allusers', function(req, res) {
 
 const Voiture = require('./Models/Voiture');
 
+const storage = multer.diskStorage({
+    destination : (req, file, callback) =>{
+        callback(null,'public')
+    },
+    filename : (req, file, callback) =>{
+        callback(null, Date.now()+  '-' + file.originalname)
+    }
+})
+
+const upload = multer({storage}).array('file');
+
+app.post('/upload', function(req, res) {
+
+    upload(req, res, (err) => {
+        if (err){
+            return res.status(500).json({error: err});
+        }
+
+        const Data = new Voiture({
+            marque : req.body.marque,
+            modele : req.body.modele,
+            annee: req.body.annee,
+            immatriculation : req.body.immatriculation,
+            description : req.body.description,
+            mise_en_service : req.body.mise_en_service,
+            img: req.files
+        });
+        Data.save();
+
+        return res.status(200).send(req.file);
+    });
+
+})
+
+
 app.post('/api/Voiture', function (req, res) {
     console.log(req.body);
     console.log(req);
