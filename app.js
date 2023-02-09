@@ -14,6 +14,15 @@ const {createToken, validateToken} = require('./JWT');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const moment = require('moment');
+
+moment().format('Do MMMM YYYY');
+
+const multer = require('multer');
+
+app.use(express.static('public'))
+
+
 var dbUrl = process.env.DATABASE_URL
 console.log(dbUrl);
 
@@ -31,6 +40,7 @@ const methodOverride = require('method-override');
 const User = require('./Models/User');
 
 app.use(methodOverride('_method'));
+
 
 app.post('/api/signup', function (req, res) {
     const Data = new User({
@@ -67,13 +77,65 @@ app.post('/api/login', function(req, res) {
             res.status(404).send("Password invalid !")
         }
 
-        // res.json("LOGGED IN")
-        res.redirect("http://localhost:3000/")
+        // res.json({username : user.username})
+        res.redirect("http://localhost:3000/users/"+user.username)
     })
     .catch(err => {
         console.log(err)
     });
 });
+
+app.get('/allusers', function(req, res) {
+    User.find().then( data =>{
+        res.json({data: data});
+    }).catch(err => {
+        console.log(err);
+    });
+});
+
+const Voiture = require('./Models/Voiture');
+
+app.post('/api/Voiture', function (req, res) {
+    console.log(req.body);
+    console.log(req);
+
+
+    const Data = new Voiture({
+        marque : req.body.marque,
+        modele : req.body.modele,
+        annee: req.body.annee,
+        immatriculation : req.body.immatriculation,
+        description : req.body.description,
+        mise_en_service : req.body.mise_en_service,
+    });
+
+
+    Data.save().then(()=>{
+        console.log("Voiture saved !");
+        res.redirect("http://localhost:3000/");
+    }).catch(err=>{
+        console.log(err);
+    });
+});
+
+app.get("/allCars", function(req, res){
+    Voiture.find().then(data => {
+        res.json({data: data});
+    }).catch(err => {
+        console.log(err);
+    })
+});
+
+app.get('/onecar/:id', function(req, res){
+    Voiture.findOne({
+        _id : req.params.id
+    }).then(data =>{
+        res.json({data: data});
+    }).catch(err =>{
+        console.log(err);
+    });
+});
+
 
 
 const server = app.listen(port, function () {
